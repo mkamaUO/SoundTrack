@@ -93,76 +93,85 @@ export default function MoodPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      <div className="absolute inset-0 gradient-mesh opacity-50" />
       <Navigation />
 
-      <main className="container mx-auto px-4 pt-24 pb-24 md:pt-32 md:pb-8">
+      <main className="relative container mx-auto px-4 sm:px-6 pt-24 pb-24 md:pt-32 md:pb-8">
         <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">Mood Analysis</h1>
-            <p className="text-muted-foreground">AI-powered emotion detection from your biomedical data</p>
+          <div className="mb-10">
+            <h1 className="text-4xl md:text-5xl font-bold mb-3">
+              <span className="text-gradient">Mood</span> <span className="text-foreground">Analysis</span>
+            </h1>
+            <p className="text-lg text-muted-foreground">AI-powered emotion detection from your biomedical data</p>
           </div>
 
-          {/* Analysis Progress */}
           {moodState === "analyzing" && (
-            <Card className="mb-6 border-2 border-primary/50">
+            <Card className="mb-8 bg-card/40 backdrop-blur-sm border-primary/50 glow-sm rounded-2xl overflow-hidden">
               <CardHeader>
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-primary animate-pulse" />
-                  <CardTitle>Analyzing Your Data</CardTitle>
+                  <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
+                    <Sparkles className="w-5 h-5 text-primary-foreground animate-pulse" />
+                  </div>
+                  <CardTitle className="text-xl">Analyzing Your Data</CardTitle>
                 </div>
-                <CardDescription>Processing biomedical signals and environmental context...</CardDescription>
+                <CardDescription className="text-base">Processing biomedical signals and environmental context...</CardDescription>
               </CardHeader>
               <CardContent>
-                <Progress value={analysisProgress} className="h-3" />
-                <p className="text-sm text-muted-foreground mt-2">{analysisProgress}% complete</p>
+                <div className="relative">
+                  <Progress value={analysisProgress} className="h-2" />
+                </div>
+                <p className="text-sm text-muted-foreground mt-3">{analysisProgress}% complete</p>
               </CardContent>
             </Card>
           )}
 
-          {/* Detected Mood */}
           {moodState === "complete" && (
             <>
-              <Card className="mb-6 border-2 border-primary/50 bg-gradient-to-br from-primary/5 to-secondary/5">
-                <CardHeader>
-                  <CardTitle>Detected Mood</CardTitle>
-                  <CardDescription>Based on your biomedical and environmental data</CardDescription>
+              <Card className="mb-8 bg-card/40 backdrop-blur-sm border-primary/40 rounded-2xl overflow-hidden glow-md">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10" />
+                <CardHeader className="relative">
+                  <CardTitle className="text-2xl">Detected Mood</CardTitle>
+                  <CardDescription className="text-base">Based on your biomedical and environmental data</CardDescription>
                 </CardHeader>
-                <CardContent>
-                  <div className="flex flex-col sm:flex-row items-center gap-6">
-                    <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                      {getMoodIcon(detectedMood)}
+                <CardContent className="relative">
+                  <div className="flex flex-col sm:flex-row items-center gap-8">
+                    <div className="relative">
+                      <div className="w-24 h-24 rounded-2xl gradient-primary flex items-center justify-center text-primary-foreground glow-md">
+                        {getMoodIcon(detectedMood)}
+                      </div>
                     </div>
                     <div className="flex-1 text-center sm:text-left">
-                      <h3 className="text-2xl font-bold text-foreground capitalize mb-2">{detectedMood}</h3>
-                      <p className="text-muted-foreground">{getMoodDescription(detectedMood)}</p>
+                      <h3 className="text-3xl font-bold text-foreground capitalize mb-3">{detectedMood}</h3>
+                      <p className="text-muted-foreground text-base leading-relaxed">{getMoodDescription(detectedMood)}</p>
                     </div>
-                    <Badge className="bg-primary text-primary-foreground">
+                    <Badge className="gradient-accent text-accent-foreground px-4 py-2 text-sm font-semibold rounded-xl">
                       {emotionScores.find((e) => e.emotion === detectedMood)?.score}% Confidence
                     </Badge>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Emotion Breakdown */}
-              <Card className="mb-6">
+              <Card className="mb-8 bg-card/40 backdrop-blur-sm border-border/50 rounded-2xl">
                 <CardHeader>
-                  <CardTitle>Emotion Breakdown</CardTitle>
-                  <CardDescription>Detailed analysis of all detected emotions</CardDescription>
+                  <CardTitle className="text-2xl">Emotion Breakdown</CardTitle>
+                  <CardDescription className="text-base">Detailed analysis of all detected emotions</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
+                  <div className="space-y-5">
                     {emotionScores
                       .sort((a, b) => b.score - a.score)
                       .map((emotion) => (
-                        <div key={emotion.emotion} className="space-y-2">
+                        <div key={emotion.emotion} className="space-y-2.5">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-foreground capitalize">{emotion.emotion}</span>
-                            <span className="text-sm text-muted-foreground">{emotion.score}%</span>
+                            <span className="text-sm font-semibold text-foreground capitalize">{emotion.emotion}</span>
+                            <span className="text-sm font-medium text-muted-foreground">{emotion.score}%</span>
                           </div>
-                          <div className="h-2 bg-muted rounded-full overflow-hidden">
-                            <div className={`h-full ${emotion.color}`} style={{ width: `${emotion.score}%` }} />
+                          <div className="h-2.5 bg-muted rounded-full overflow-hidden">
+                            <div
+                              className={`h-full ${emotion.color} transition-all duration-500`}
+                              style={{ width: `${emotion.score}%` }}
+                            />
                           </div>
                         </div>
                       ))}
@@ -170,34 +179,33 @@ export default function MoodPage() {
                 </CardContent>
               </Card>
 
-              {/* Biomarker Data */}
-              <Card className="mb-6">
+              <Card className="mb-8 bg-card/40 backdrop-blur-sm border-border/50 rounded-2xl">
                 <CardHeader>
-                  <CardTitle>Biomarker Analysis</CardTitle>
-                  <CardDescription>Processed signals from your biomedical data</CardDescription>
+                  <CardTitle className="text-2xl">Biomarker Analysis</CardTitle>
+                  <CardDescription className="text-base">Processed signals from your biomedical data</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid sm:grid-cols-2 gap-4">
                     {biomarkers.map((marker) => (
-                      <div key={marker.label} className="p-4 rounded-lg border border-border bg-card">
-                        <div className="flex items-start justify-between mb-2">
-                          <p className="text-sm font-medium text-foreground">{marker.label}</p>
+                      <div key={marker.label} className="p-5 rounded-xl border border-border/50 gradient-card">
+                        <div className="flex items-start justify-between mb-3">
+                          <p className="text-sm font-semibold text-foreground">{marker.label}</p>
                           <Badge
                             variant={marker.status === "normal" ? "secondary" : "default"}
                             className={
                               marker.status === "elevated"
-                                ? "bg-orange-500 text-white"
+                                ? "bg-orange-500/90 text-white"
                                 : marker.status === "low"
-                                  ? "bg-blue-500 text-white"
-                                  : ""
+                                  ? "bg-blue-500/90 text-white"
+                                  : "bg-primary/20 text-primary"
                             }
                           >
                             {marker.status}
                           </Badge>
                         </div>
-                        <div className="flex items-baseline gap-1">
-                          <span className="text-2xl font-bold text-foreground">{marker.value}</span>
-                          <span className="text-sm text-muted-foreground">{marker.unit}</span>
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="text-3xl font-bold text-foreground">{marker.value}</span>
+                          <span className="text-base text-muted-foreground">{marker.unit}</span>
                         </div>
                       </div>
                     ))}
@@ -205,14 +213,13 @@ export default function MoodPage() {
                 </CardContent>
               </Card>
 
-              {/* Next Steps */}
-              <Card className="border-2 border-secondary/50 bg-secondary/5">
+              <Card className="bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10 border-primary/30 rounded-2xl glow-sm overflow-hidden">
                 <CardHeader>
-                  <CardTitle>Ready for Music</CardTitle>
-                  <CardDescription>Get personalized song recommendations based on your mood</CardDescription>
+                  <CardTitle className="text-2xl">Ready for Music</CardTitle>
+                  <CardDescription className="text-base">Get personalized song recommendations based on your mood</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button asChild className="w-full sm:w-auto">
+                  <Button asChild className="gradient-primary text-primary-foreground glow-sm hover:glow-md transition-all h-11 px-6 rounded-xl font-semibold">
                     <a href="/music">Generate Playlist →</a>
                   </Button>
                 </CardContent>

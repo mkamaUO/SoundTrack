@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Navigation } from "@/components/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Play, Pause, Heart, MoreVertical } from "lucide-react"
+import { Play, Pause, Heart, MoveVertical as MoreVertical } from "lucide-react"
 
 const songs = [
   {
@@ -54,31 +54,42 @@ export default function PlaylistPage() {
   const [likedSongs, setLikedSongs] = useState<Set<number>>(new Set())
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      <div className="absolute inset-0 gradient-mesh opacity-50" />
       <Navigation />
-      <main className="container mx-auto px-4 pt-20 pb-8">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Your Playlist</h1>
-          <p className="text-muted-foreground">Songs matched to your mood and activities</p>
+      <main className="relative container mx-auto px-4 sm:px-6 pt-24 pb-16">
+        <div className="mb-10">
+          <h1 className="text-4xl md:text-5xl font-bold mb-3">
+            <span className="text-foreground">Your </span>
+            <span className="text-gradient">Playlist</span>
+          </h1>
+          <p className="text-lg text-muted-foreground">Songs matched to your mood and activities</p>
         </div>
 
-        <div className="space-y-2">
-          {songs.map((song) => (
-            <Card key={song.id} className="p-4 bg-card border-border hover:bg-muted/50 transition-colors">
-              <div className="flex items-center gap-4">
-                <div className="relative w-14 h-14 rounded-lg overflow-hidden flex-shrink-0">
+        <div className="space-y-3 max-w-4xl">
+          {songs.map((song, index) => (
+            <Card
+              key={song.id}
+              className="group p-5 bg-card/40 backdrop-blur-sm border-border/50 hover:border-primary/50 transition-all hover:glow-sm rounded-xl"
+            >
+              <div className="flex items-center gap-5">
+                <div className="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 ring-1 ring-border/50">
                   <img src={song.image || "/placeholder.svg"} alt={song.title} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-foreground truncate">{song.title}</h3>
+                  <h3 className="font-bold text-foreground truncate text-lg">{song.title}</h3>
                   <p className="text-sm text-muted-foreground truncate">{song.artist}</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">{song.mood}</span>
-                  <span className="text-sm text-muted-foreground tabular-nums">{song.duration}</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs px-3 py-1.5 rounded-full gradient-primary text-primary-foreground font-medium">
+                    {song.mood}
+                  </span>
+                  <span className="text-sm text-muted-foreground tabular-nums font-medium">{song.duration}</span>
                   <Button
                     size="sm"
                     variant="ghost"
+                    className="hover:bg-card/60 rounded-lg"
                     onClick={() =>
                       setLikedSongs((prev) => {
                         const next = new Set(prev)
@@ -91,17 +102,24 @@ export default function PlaylistPage() {
                       })
                     }
                   >
-                    <Heart className={`w-4 h-4 ${likedSongs.has(song.id) ? "fill-primary text-primary" : ""}`} />
+                    <Heart
+                      className={`w-5 h-5 transition-all ${likedSongs.has(song.id) ? "fill-accent text-accent" : "text-muted-foreground"}`}
+                    />
                   </Button>
                   <Button
                     size="sm"
                     variant="ghost"
+                    className="hover:bg-card/60 rounded-lg"
                     onClick={() => setPlayingId(playingId === song.id ? null : song.id)}
                   >
-                    {playingId === song.id ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                    {playingId === song.id ? (
+                      <Pause className="w-5 h-5 text-primary" />
+                    ) : (
+                      <Play className="w-5 h-5 text-foreground" />
+                    )}
                   </Button>
-                  <Button size="sm" variant="ghost">
-                    <MoreVertical className="w-4 h-4" />
+                  <Button size="sm" variant="ghost" className="hover:bg-card/60 rounded-lg">
+                    <MoreVertical className="w-5 h-5" />
                   </Button>
                 </div>
               </div>
