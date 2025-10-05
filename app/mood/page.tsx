@@ -1,8 +1,5 @@
 "use client"
 
-type MoodState = "analyzing" | 'comple```tsx file="app/mood/page.tsx'
-;("use client")
-
 import { useState, useEffect } from "react"
 import { Navigation } from "@/components/navigation"
 import { Button } from "@/components/ui/button"
